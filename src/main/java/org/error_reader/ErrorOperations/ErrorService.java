@@ -30,9 +30,30 @@ public class ErrorService {
     }
 
 
-
     //Tu się zapisze HashMap do json po wczytaniu wszystkich błędów z pliku errorList.json
     public void saveHashMap() throws FileNotFoundException {
+        Map<String, List<Error>> errorMap = generateHashMap();
+
+        try {
+            FileReadAndSave.saveToJson(errorMap);
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        }
+    }
+
+    public void saveHashMapStats() throws IOException {
+        HashMap<String, Integer> errorMapStats = generateHashMapStats();
+
+        try {
+            FileReadAndSave.saveToJson(errorMapStats);
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        }
+
+
+    }
+
+    private Map<String, List<Error>> generateHashMap() throws FileNotFoundException {
         Map<String, List<Error>> errorMap = new HashMap<>();
         try {
             //Tu ładnie wczytuje wszystkie dostępne błędy
@@ -55,14 +76,11 @@ public class ErrorService {
             throw new RuntimeException(e);
         }
 
-        try {
-            FileReadAndSave.saveToJson(errorMap);
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
-        }
+        return errorMap;
     }
 
-    public void saveHashMapStats() throws IOException {
+    private HashMap<String, Integer> generateHashMapStats() throws FileNotFoundException {
+
         HashMap<String, Integer> errorMapStats = new HashMap<>();
 
         try {
@@ -84,13 +102,7 @@ public class ErrorService {
             throw new RuntimeException(e);
         }
 
-        try {
-            FileReadAndSave.saveToJson(errorMapStats);
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
-        }
-
-
+        return errorMapStats;
     }
 
     //Wczytywanie wszystkich błędów z domyślnego pliku tzn errorList.json
@@ -133,26 +145,7 @@ public class ErrorService {
 
     // Generowanie wykresu przy pomocy biblioteki JFreeChart
     public void showChart() throws FileNotFoundException {
-        HashMap<String, Integer> errorMapStats = new HashMap<>();
-
-        try {
-            //Tu ładnie wczytuje wszystkie dostępne błędy
-            List<Error> errorList = FileReadAndSave.loadFromJson();
-            int counter;
-            for (Error error : errorList) {
-                if (errorMapStats.containsKey(ErrorAnalyzer.getKey(error))) {
-                    counter = errorMapStats.get(ErrorAnalyzer.getKey(error)) + 1;
-                    errorMapStats.put(ErrorAnalyzer.getKey(error), counter);
-                } else {
-                    errorMapStats.put(ErrorAnalyzer.getKey(error), 1);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        HashMap<String, Integer> errorMapStats = generateHashMapStats();
 
         TreeMap<String, Integer> sortedMap = new TreeMap<>(new HashMapComparator(errorMapStats));
         sortedMap.putAll(errorMapStats);
