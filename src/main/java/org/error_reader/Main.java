@@ -49,7 +49,7 @@ public class Main {
                     }
                     case "3" -> {
                         startTime = System.currentTimeMillis();
-                        errorService.saveHashMap2();
+                        errorService.saveHashMap();
                         endTime = System.currentTimeMillis();
                         System.out.println("\nUtworzono plik errorMap.json");
                         System.out.println("Czas operacji to: " + (double) (endTime - startTime) / 1000 + "s\n\n");

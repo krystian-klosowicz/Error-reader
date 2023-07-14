@@ -93,7 +93,7 @@ public class FileReadAndSave {
         }
     }
 
-    public static void saveToJson2(Map<String, Integer> errorMapStats) throws FileNotFoundException {
+    public static void saveToJson(HashMap<String, Integer> errorMapStats) throws FileNotFoundException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
