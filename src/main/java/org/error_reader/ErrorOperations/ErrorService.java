@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -213,13 +214,6 @@ public class ErrorService {
     }
 
 
-    private void generateChart(HashMap<String, Integer> dataMap) {
-
-
-
-
-    }
-
     private static class HashMapComparator implements Comparator<String> {
         HashMap<String, Integer> map;
 
@@ -228,8 +222,10 @@ public class ErrorService {
         }
 
         public int compare(String a, String b) {
-            if (map.get(a) >= map.get(b)) {
+            if (map.get(a) > map.get(b)) {
                 return -1;
+            } else if (map.get(a).equals(map.get(b))) {
+                return 0;
             } else {
                 return 1;
             }
