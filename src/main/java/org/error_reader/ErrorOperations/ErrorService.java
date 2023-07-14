@@ -153,12 +153,12 @@ public class ErrorService {
         // Tworzenie zestawu danych kategorii z posortowanymi danymi
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
-            dataset.addValue(entry.getValue(), "Wartości", entry.getKey());
+            dataset.addValue(entry.getValue(), "Błąd", entry.getKey());
         }
 
         int columnCount = dataset.getColumnCount();
         for (int i = columnCount - 1; i >= 0; i--) {
-            if (i >= 40) {
+            if (i >= 50) {
                 Comparable<?> columnKey = dataset.getColumnKey(i);
                 dataset.removeColumn(columnKey);
             }
