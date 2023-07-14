@@ -14,26 +14,22 @@ import java.util.*;
 public class FileReadAndSave {
     public static List<Error> readAndParseErrorsFromFile(String fileName) throws FileNotFoundException {
 
-        //Zmienne wyciągnąć niektóre przed pętle żeby cos nie wykonywało sie bezsensownie kilkanaście razy
         List<Error> errorList = new ArrayList<>();
-        String line;
-        Error error, lastError;
-        String errorInfo;
-        StringBuilder stringBuilderErrorInfo;
 
 
         try {
             BufferedReader br = new BufferedReader(new java.io.FileReader(fileName));
+            String line;
             while ((line = br.readLine()) != null) {
                 if (ErrorAnalyzer.isError(line)) {
-                    error = ErrorService.createErrorFromString(line);
+                    Error error = ErrorService.createErrorFromString(line);
                     errorList.add(error);
 
                 } else if (!errorList.isEmpty()) {
                     int lastErrorIndex = errorList.size() - 1;
-                    lastError = errorList.get(lastErrorIndex);
-                    errorInfo = lastError.getStackInfo();
-                    stringBuilderErrorInfo = new StringBuilder(errorInfo);
+                    Error lastError = errorList.get(lastErrorIndex);
+                    String errorInfo = lastError.getStackInfo();
+                    StringBuilder stringBuilderErrorInfo = new StringBuilder(errorInfo);
                     stringBuilderErrorInfo.append("\n").append(line);
                     lastError.setStackInfo(stringBuilderErrorInfo.toString());
                 }
