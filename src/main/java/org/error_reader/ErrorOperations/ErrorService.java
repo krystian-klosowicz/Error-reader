@@ -30,34 +30,6 @@ public class ErrorService {
     }
 
 
-//    public void saveHashMap(String filePath) throws FileNotFoundException {
-//        Map<String, List<Error>> errorMap = new HashMap<>();
-//        try {
-//            List<Error> errorList = FileReadAndSave.readAndParseErrorsFromFile(filePath);
-//            for (Error error : errorList) {
-//                if (errorMap.containsKey(ErrorAnalyzer.getKey(error))) {
-//                    List<Error> l1 = errorMap.get(ErrorAnalyzer.getKey(error));
-//                    l1.add(error);
-//                    errorMap.put(ErrorAnalyzer.getKey(error), l1);
-//                } else {
-//                    List<Error> l1 = new ArrayList<>();
-//                    l1.add(error);
-//                    errorMap.put(ErrorAnalyzer.getKey(error), l1);
-//                }
-//            }
-//
-//        } catch (FileNotFoundException e) {
-//            throw new FileNotFoundException();
-//        }
-//
-//        try {
-//            FileReadAndSave.saveToJson(errorMap);
-//        } catch (FileNotFoundException e) {
-//            throw new FileNotFoundException();
-//        }
-//
-//
-//    }
 
     //Tu się zapisze HashMap do json po wczytaniu wszystkich błędów z pliku errorList.json
     public void saveHashMap() throws FileNotFoundException {
