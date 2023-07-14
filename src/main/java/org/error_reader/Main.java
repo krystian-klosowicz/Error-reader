@@ -25,8 +25,9 @@ public class Main {
                         1. Wczytaj błędy do JSON\s
                         2. Wypisz błędy z JSON na konsoli\s
                         3. Zapisz HashMap do pliku JSON\s
-                        4. Zapisz statystyki HashMap do JSON i wygeneruj wykres\s
-                        5. Wyjście""");
+                        4. Zapisz statystyki HashMap do JSON\s
+                        5. Wyświetl wykres statystyki HasMap\s
+                        6. Wyjście""");
                 System.out.println("\nWybierz: ");
                 input = scanner.nextLine();
 
@@ -60,7 +61,14 @@ public class Main {
                         System.out.println("\nUtworzono plik hashMapStats.json");
                         System.out.println("Czas operacji to: " + (double) (endTime - startTime) / 1000 + "s\n\n");
                     }
-                    case "5" -> flag = false;
+                    case "5" -> {
+                        startTime = System.currentTimeMillis();
+                        errorService.showChart();
+                        endTime = System.currentTimeMillis();
+                        System.out.println("\nWyświetlono plik z wykresem");
+                        System.out.println("Czas operacji to: " + (double) (endTime - startTime) / 1000 + "s\n\n");
+                    }
+                    case "6" -> flag = false;
                     default -> System.out.println("Podałeś niepoprawny numer.\n");
                 }
             }

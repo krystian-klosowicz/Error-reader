@@ -117,7 +117,6 @@ public class ErrorService {
             throw new FileNotFoundException();
         }
 
-        generateChart(errorMapStats);
 
     }
 
@@ -160,10 +159,30 @@ public class ErrorService {
     }
 
     // Generowanie wykresu przy pomocy biblioteki JFreeChart
-    private void generateChart(HashMap<String, Integer> dataMap) {
+    public void showChart() throws FileNotFoundException {
+        HashMap<String, Integer> errorMapStats = new HashMap<>();
 
-        TreeMap<String, Integer> sortedMap = new TreeMap<>(new HashMapComparator(dataMap));
-        sortedMap.putAll(dataMap);
+        try {
+            //Tu ładnie wczytuje wszystkie dostępne błędy
+            List<Error> errorList = FileReadAndSave.loadFromJson();
+            int counter;
+            for (Error error : errorList) {
+                if (errorMapStats.containsKey(ErrorAnalyzer.getKey(error))) {
+                    counter = errorMapStats.get(ErrorAnalyzer.getKey(error)) + 1;
+                    errorMapStats.put(ErrorAnalyzer.getKey(error), counter);
+                } else {
+                    errorMapStats.put(ErrorAnalyzer.getKey(error), 1);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        TreeMap<String, Integer> sortedMap = new TreeMap<>(new HashMapComparator(errorMapStats));
+        sortedMap.putAll(errorMapStats);
 
         // Tworzenie zestawu danych kategorii z posortowanymi danymi
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -188,13 +207,15 @@ public class ErrorService {
                 true, true, false
         );
 
-//        CategoryPlot plot = chart.getCategoryPlot();
-//        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions);  // Obróć etykiety o 45 stopni
-
         ChartFrame frame = new ChartFrame("Wykres błędów", chart);
-
         frame.setSize(800, 600);  // Ustaw większy rozmiar okna
         frame.setVisible(true);
+    }
+
+
+    private void generateChart(HashMap<String, Integer> dataMap) {
+
+
 
 
     }
