@@ -28,40 +28,6 @@ public class ErrorService {
         return e1;
     }
 
-    public void showHashMap(String filePath) throws FileNotFoundException {
-        Map<String, List<Error>> errorMap = new HashMap<>();
-        try {
-            List<Error> errorList = FileReadAndSave.readAndParseErrorsFromFile(filePath);
-            for (Error error : errorList) {
-                if (errorMap.containsKey(ErrorAnalyzer.getKey(error))) {
-                    List<Error> l1 = errorMap.get(ErrorAnalyzer.getKey(error));
-                    l1.add(error);
-                    errorMap.put(ErrorAnalyzer.getKey(error), l1);
-                } else {
-                    List<Error> l1 = new ArrayList<>();
-                    l1.add(error);
-                    errorMap.put(ErrorAnalyzer.getKey(error), l1);
-                }
-            }
-
-
-            //TO GIT wypisanie posortowanego
-            int aa = 0;
-            Set<String> sortedKeys = new TreeSet<>(errorMap.keySet());
-            for (String key : sortedKeys) {
-                int value = errorMap.get(key).size();
-                aa += value;
-                System.out.println(key + " -----> " + value);
-            }
-            System.out.println(sortedKeys.size() + " --> " + aa);
-
-
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException();
-        }
-
-
-    }
 
     public void saveHashMap(String filePath) throws FileNotFoundException {
         Map<String, List<Error>> errorMap = new HashMap<>();
