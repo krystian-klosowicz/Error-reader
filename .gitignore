@@ -36,3 +36,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+## Files ###
+errorList.json
+errorMap.json
+errorMapStats.json
+GcmWebServices_Trace.txt
+GcmWebServices_Trace(1).txt
