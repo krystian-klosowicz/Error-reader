@@ -79,33 +79,42 @@ public class ErrorAnalyzer {
         String modifiedErrorLog = errorLog.replaceAll("\\[(.*?)\\]", "[XXX]");
         String modifiedErrorLog1 = modifiedErrorLog.replaceAll("=([^,\\s]+)", "=XXX");
         String modifiedErrorLog2 = modifiedErrorLog1.replaceAll("(?i)ID: \\d+", "ID: XXX");
-        String modifiedErrorLog3 = modifiedErrorLog2.replaceAll("(?i)Code: \\d+", "Code: XXX");
-        String modifiedErrorLog4 = modifiedErrorLog3.replaceAll("(?i)Code: null", "Code: XXX");
-        String modifiedErrorLog5 = modifiedErrorLog4.replaceAll("(?i)interrupting: \\d+", "interrupting: XXX");
+        String modifiedErrorLog3 = modifiedErrorLog2.replaceAll("(?i)Code: \\d+", "Code: XXX")
+                .replaceAll("(?i)Code: null", "Code: XXX");
+        String modifiedErrorLog4 = modifiedErrorLog3.replaceAll("(?i)Job: \\d+", "Job: XXX");
+        String modifiedErrorLog5 = modifiedErrorLog4.replaceAll("Exception:\\d+", "Exception:XXX")
+                .replaceAll("START: Exception form CLIENT", "START: XXX")
+                .replaceAll("Computer User Name:[^,]+", "Computer User Name:XXX")
+                .replaceAll("Computer Name:[^,]+", "Computer Name:XXX")
+                .replaceAll("Entry from secString:\\d+", "Entry from secString:XXX")
+                .replaceAll("Application user login:[^,]+", "Application user login:XXX")
+                .replaceAll("Application userID:[^,]+", "Application userID:XXX")
+                .replaceAll("END: Exception form CLIENT", "END: XXX");
+        String modifiedErrorLog6 = modifiedErrorLog5.replaceAll("(?i)interrupting: \\d+", "interrupting: XXX");
 
         String s1 = "REPORTS-INTERRUPTED-POSTFUNCTIONS D&T:";
-        if (modifiedErrorLog5.contains(s1)) {
-            int id = modifiedErrorLog5.lastIndexOf(s1);
-            modifiedErrorLog5 = modifiedErrorLog5.substring(0, (id + s1.length())) + " XXX";
+        if (modifiedErrorLog6.contains(s1)) {
+            int id = modifiedErrorLog6.lastIndexOf(s1);
+            modifiedErrorLog6 = modifiedErrorLog6.substring(0, (id + s1.length())) + " XXX";
         }
 
         String s2 = "Invalid float number:";
-        if (modifiedErrorLog5.contains(s2)) {
-            int id = modifiedErrorLog5.lastIndexOf(s2);
-            modifiedErrorLog5 = modifiedErrorLog5.substring(0, (id + s2.length())) + " XXX";
+        if (modifiedErrorLog6.contains(s2)) {
+            int id = modifiedErrorLog6.lastIndexOf(s2);
+            modifiedErrorLog6 = modifiedErrorLog6.substring(0, (id + s2.length())) + " XXX";
         }
 
         String s3 = "ERR in DBDataReader.fill: Too many records returned by the query:";
-        if (modifiedErrorLog5.contains(s3)) {
-            int id = modifiedErrorLog5.lastIndexOf("FROM");
-            modifiedErrorLog5 = modifiedErrorLog5.substring(0, (id + "FROM".length()));
+        if (modifiedErrorLog6.contains(s3)) {
+            int id = modifiedErrorLog6.lastIndexOf("FROM");
+            modifiedErrorLog6 = modifiedErrorLog6.substring(0, (id + "FROM".length()));
         }
 
         String s4 = "Exception in checkIfURLExists";
-        if (modifiedErrorLog5.contains(s4)) {
-            int id = modifiedErrorLog5.lastIndexOf(s4);
-            modifiedErrorLog5 = modifiedErrorLog5.substring(0, (id + s4.length())) + "(XXX)";
+        if (modifiedErrorLog6.contains(s4)) {
+            int id = modifiedErrorLog6.lastIndexOf(s4);
+            modifiedErrorLog6 = modifiedErrorLog6.substring(0, (id + s4.length())) + "(XXX)";
         }
-        return modifiedErrorLog5;
+        return modifiedErrorLog6;
     }
 }
