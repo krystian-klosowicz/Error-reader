@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,6 +26,9 @@ public class JavaFxClass extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("ErrorReader");
+
+        Image icon = new Image("icon.png");
+        primaryStage.getIcons().add(icon);
 
         ErrorService errorService = new ErrorService();
         AtomicLong startTime = new AtomicLong();
