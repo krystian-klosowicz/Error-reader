@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class HashMapComparator implements Comparator<String> {
-    HashMap<String, Integer> map;
+    private HashMap<String, Integer> map;
 
     public HashMapComparator(HashMap<String, Integer> map) {
         this.map = map;
