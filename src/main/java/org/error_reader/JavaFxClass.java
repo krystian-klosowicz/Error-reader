@@ -75,7 +75,7 @@ public class JavaFxClass extends Application {
                     startTime.set(System.currentTimeMillis());
                     errorService.saveJson(fileName);
                     endTime.set(System.currentTimeMillis());
-                    resultTextArea.appendText("\nDodano do pliku errorList.json\n");
+                    resultTextArea.appendText("Dodano do pliku errorList.json\n");
                     resultTextArea.appendText("Czas operacji to: " + (double) (endTime.get() - startTime.get()) / 1000 + "s\n\n");
                 } catch (IOException ex) {
                     resultTextArea.appendText("Nie znaleziono pliku\n");
@@ -92,6 +92,7 @@ public class JavaFxClass extends Application {
                 startTime.set(System.currentTimeMillis());
                 errorService.showJson();
                 endTime.set(System.currentTimeMillis());
+                resultTextArea.appendText("Błędy zostały wypisane w konsoli\n");
                 resultTextArea.appendText("Czas operacji to: " + (double) (endTime.get() - startTime.get()) / 1000 + "s\n\n");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -105,6 +106,7 @@ public class JavaFxClass extends Application {
                 startTime.set(System.currentTimeMillis());
                 errorService.saveHashMap();
                 endTime.set(System.currentTimeMillis());
+                resultTextArea.appendText("Dodano do pliku errorMap.json\n");
                 resultTextArea.appendText("Czas operacji to: " + (double) (endTime.get() - startTime.get()) / 1000 + "s\n\n");
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
@@ -118,6 +120,7 @@ public class JavaFxClass extends Application {
                 startTime.set(System.currentTimeMillis());
                 errorService.saveHashMapStats();
                 endTime.set(System.currentTimeMillis());
+                resultTextArea.appendText("Dodano do pliku errorMapStats.json\n");
                 resultTextArea.appendText("Czas operacji to: " + (double) (endTime.get() - startTime.get()) / 1000 + "s\n\n");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -131,6 +134,7 @@ public class JavaFxClass extends Application {
                 startTime.set(System.currentTimeMillis());
                 errorService.showChart();
                 endTime.set(System.currentTimeMillis());
+                resultTextArea.appendText("Wyświetlono wykres w nowym oknie\n");
                 resultTextArea.appendText("Czas operacji to: " + (double) (endTime.get() - startTime.get()) / 1000 + "s\n\n");
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
