@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.util.*;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+
+import javax.swing.*;
 
 public class ErrorService {
 
@@ -42,7 +44,7 @@ public class ErrorService {
     }
 
     public void saveHashMapStats() throws IOException {
-        HashMap<String, Integer> errorMapStats = generateHashMapStats();
+        HashMap<String, Integer> errorMapStats = generateHashMapNumberOfOccurrencesByError();
 
         try {
             FileReadAndSave.saveToJson(errorMapStats);
@@ -79,7 +81,7 @@ public class ErrorService {
         return errorMap;
     }
 
-    private HashMap<String, Integer> generateHashMapStats() throws FileNotFoundException {
+    private HashMap<String, Integer> generateHashMapNumberOfOccurrencesByError() throws FileNotFoundException {
 
         HashMap<String, Integer> errorMapStats = new HashMap<>();
 
@@ -93,6 +95,32 @@ public class ErrorService {
                     errorMapStats.put(ErrorAnalyzer.getKey(error), counter);
                 } else {
                     errorMapStats.put(ErrorAnalyzer.getKey(error), 1);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return errorMapStats;
+    }
+
+    private HashMap<String, Integer> generateHashMapNumberOfOccurrencesByDate() throws FileNotFoundException {
+
+        HashMap<String, Integer> errorMapStats = new HashMap<>();
+
+        try {
+            //Tu ładnie wczytuje wszystkie dostępne błędy
+            List<Error> errorList = FileReadAndSave.loadFromJson();
+            int counter;
+            for (Error error : errorList) {
+                if (errorMapStats.containsKey(error.getDate())) {
+                    counter = errorMapStats.get(error.getDate()) + 1;
+                    errorMapStats.put(error.getDate(), counter);
+                } else {
+                    errorMapStats.put(error.getDate(), 1);
                 }
             }
 
@@ -150,22 +178,23 @@ public class ErrorService {
 
     // Generowanie wykresu przy pomocy biblioteki JFreeChart
     public void showChart() throws FileNotFoundException {
-        HashMap<String, Integer> errorMapStats = generateHashMapStats();
+        // Chart 1
+        HashMap<String, Integer> errorMapStats = generateHashMapNumberOfOccurrencesByError();
 
         TreeMap<String, Integer> sortedMap = new TreeMap<>(new HashMapComparator(errorMapStats));
         sortedMap.putAll(errorMapStats);
 
         // Tworzenie zestawu danych kategorii z posortowanymi danymi
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultCategoryDataset dataset1 = new DefaultCategoryDataset();
         for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
-            dataset.addValue(entry.getValue(), "Błąd", entry.getKey());
+            dataset1.addValue(entry.getValue(), "Błąd", entry.getKey());
         }
 
-        int columnCount = dataset.getColumnCount();
+        int columnCount = dataset1.getColumnCount();
         for (int i = columnCount - 1; i >= 0; i--) {
             if (i >= 50) {
-                Comparable<?> columnKey = dataset.getColumnKey(i);
-                dataset.removeColumn(columnKey);
+                Comparable<?> columnKey = dataset1.getColumnKey(i);
+                dataset1.removeColumn(columnKey);
             }
         }
 
@@ -173,13 +202,56 @@ public class ErrorService {
                 "Wykres błędów",
                 "Kategorie błędów",
                 "Ilość wystąpień",
-                dataset,
+                dataset1,
                 PlotOrientation.HORIZONTAL,
                 true, true, false
         );
 
-        ChartFrame frame = new ChartFrame("Wykres błędów", chart);
-        frame.setSize(800, 600);  // Ustaw większy rozmiar okna
+        // Chart 2
+
+        errorMapStats = generateHashMapNumberOfOccurrencesByDate();
+
+        sortedMap = new TreeMap<>();
+        sortedMap.putAll(errorMapStats);
+
+        DefaultCategoryDataset dataset2 = new DefaultCategoryDataset();
+        for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
+            dataset2.addValue(entry.getValue(), "Data", entry.getKey());
+        }
+
+        // cutting
+        columnCount = dataset2.getColumnCount();
+        for (int i = columnCount - 1; i >= 0; i--) {
+            if (i >= 50) {
+                Comparable<?> columnKey = dataset2.getColumnKey(i);
+                dataset2.removeColumn(columnKey);
+            }
+        }
+
+        JFreeChart chart2 = ChartFactory.createBarChart(
+                "Wykres błędów",
+                "Kategorie błędów",
+                "Ilość wystąpień",
+                dataset2,
+                PlotOrientation.VERTICAL,
+                true, true, false
+        );
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(800, 600));
+
+        ChartPanel chartPanel2 = new ChartPanel(chart2);
+        chartPanel2.setPreferredSize(new java.awt.Dimension(800, 600));
+
+        // Create a TabbedPane
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Wykres 1", chartPanel);
+        tabbedPane.addTab("Wykres 2", chartPanel2);
+
+        // Create the main frame
+        JFrame frame = new JFrame("Wykresy");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(tabbedPane);
+        frame.pack();
         frame.setVisible(true);
     }
 
