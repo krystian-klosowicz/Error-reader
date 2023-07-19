@@ -1,5 +1,7 @@
 package org.error_reader.ErrorOperations;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,59 +9,17 @@ public class ErrorAnalyzer {
 
     private static final String regexGroup = "^(\\d{2}-\\d{2}-\\d{4}) (\\d{2}:\\d{2}:\\d{2},\\d{3}) (\\w+) \\[\\]:\\d+ (.*?)\\s-\\s(.*)$";
 
-    static String getDateFromString(String line) {
+    private static final List<Integer> groupNumbers = Arrays.asList(1, 2, 3, 4, 5);
+
+    static String getValueFromString(String line, int number) {
         Pattern pattern = Pattern.compile(regexGroup);
         Matcher matcher = pattern.matcher(line);
-        String date = "";
-        if (matcher.matches()) {
-            date = matcher.group(1);
+        String value = "";
+        if (matcher.matches() && groupNumbers.contains(number)) {
+            value = matcher.group(number);
         }
 
-        return date;
-    }
-
-    static String getTimeFromString(String line) {
-        Pattern pattern = Pattern.compile(regexGroup);
-        Matcher matcher = pattern.matcher(line);
-        String time = "";
-        if (matcher.matches()) {
-            time = matcher.group(2);
-        }
-
-        return time;
-    }
-
-    static String getTypeFromString(String line) {
-        Pattern pattern = Pattern.compile(regexGroup);
-        Matcher matcher = pattern.matcher(line);
-        String type = "";
-        if (matcher.matches()) {
-            type = matcher.group(3);
-        }
-
-        return type;
-    }
-
-    static String getPackageNameFromString(String line) {
-        Pattern pattern = Pattern.compile(regexGroup);
-        Matcher matcher = pattern.matcher(line);
-        String packageName = "";
-        if (matcher.matches()) {
-            packageName = matcher.group(4);
-        }
-
-        return packageName;
-    }
-
-    static String getErrorInfoFromString(String line) {
-        Pattern pattern = Pattern.compile(regexGroup);
-        Matcher matcher = pattern.matcher(line);
-        String errorInfo = "";
-        if (matcher.matches()) {
-            errorInfo = matcher.group(5);
-        }
-
-        return errorInfo;
+        return value;
     }
 
     public static boolean isError(String input) {
