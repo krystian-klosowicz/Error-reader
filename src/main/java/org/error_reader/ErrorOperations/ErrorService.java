@@ -18,11 +18,11 @@ public class ErrorService {
     public static Error createErrorFromString(String line) {
         Error e1 = Error.builder().build();
         if (line != null) {
-            String date = ErrorAnalyzer.getDateFromString(line);
-            String time = ErrorAnalyzer.getTimeFromString(line);
-            String type = ErrorAnalyzer.getTypeFromString(line);
-            String packageName = ErrorAnalyzer.getPackageNameFromString(line);
-            String errorInfo = ErrorAnalyzer.getErrorInfoFromString(line);
+            String date = ErrorAnalyzer.getValueFromString(line, 1);
+            String time = ErrorAnalyzer.getValueFromString(line, 2);
+            String type = ErrorAnalyzer.getValueFromString(line, 3);
+            String packageName = ErrorAnalyzer.getValueFromString(line, 4);
+            String errorInfo = ErrorAnalyzer.getValueFromString(line, 5);
             String stackInfo = "";
             e1 = Error.builder().date(date).time(time).type(type).packageName(packageName).errorLine(errorInfo).stackInfo(stackInfo).build();
         }
@@ -111,7 +111,12 @@ public class ErrorService {
         try {
             if (new File("errorList.json").exists()) {
                 errorList = FileReadAndSave.loadFromJson();
-                errorList.addAll(FileReadAndSave.readAndParseErrorsFromFile(filePath));
+                List<Error> newErrorList  = FileReadAndSave.readAndParseErrorsFromFile(filePath);
+                for (Error newError : newErrorList) {
+                    if(!errorList.contains(newError)) {
+                        errorList.add(newError);
+                    }
+                }
             } else {
                 errorList = FileReadAndSave.readAndParseErrorsFromFile(filePath);
             }

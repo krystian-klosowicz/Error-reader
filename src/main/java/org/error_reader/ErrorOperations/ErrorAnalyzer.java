@@ -30,7 +30,7 @@ public class ErrorAnalyzer {
 
 
     public static String getKey(Error e1) {
-        return replaceToXXX(new StringBuilder(e1.getPackageName()+ " - " + e1.getErrorLine()).toString());
+        return replaceToXXX(new StringBuilder(e1.getPackageName() + " - " + e1.getErrorLine()).toString());
     }
 
     public static String replaceToXXX(String errorLog) {
