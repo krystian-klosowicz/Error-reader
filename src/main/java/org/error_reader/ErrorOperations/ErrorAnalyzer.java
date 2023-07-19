@@ -70,9 +70,7 @@ public class ErrorAnalyzer {
 
 
     public static String getKey(Error e1) {
-        StringBuilder stringBuilder = new StringBuilder(e1.getPackageName());
-        stringBuilder.append(" - " ).append(e1.getErrorLine());
-        return replaceToXXX(stringBuilder.toString());
+        return replaceToXXX(new StringBuilder(e1.getPackageName()+ " - " + e1.getErrorLine()).toString());
     }
 
     public static String replaceToXXX(String errorLog) {
