@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.Objects;
+
 @Builder
 @Getter
 @Setter
@@ -31,5 +33,20 @@ public class Error {
         return date + " " + time + " " + type + " " + packageName + " - " + errorLine;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Error)) return false;
+        Error error = (Error) o;
+        return Objects.equals(date, error.date) &&
+                Objects.equals(time, error.time) &&
+                Objects.equals(type, error.type) &&
+                Objects.equals(packageName, error.packageName) &&
+                Objects.equals(errorLine, error.errorLine);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, time, type, packageName, errorLine);
+    }
 }
