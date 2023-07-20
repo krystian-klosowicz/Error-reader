@@ -141,9 +141,7 @@ public class JavaFxClass extends Application {
             }
         });
 
-        exitBtn.setOnAction(e -> {
-            primaryStage.close();
-        });
+        exitBtn.setOnAction(e -> primaryStage.close());
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
