@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -36,6 +37,7 @@ public class ErrorService {
     public void saveHashMap() throws FileNotFoundException {
         Map<String, List<Error>> errorMap = generateHashMap();
 
+
         try {
             FileReadAndSave.saveToJson(errorMap);
         } catch (FileNotFoundException e) {
@@ -56,47 +58,27 @@ public class ErrorService {
     }
 
     private Map<String, List<Error>> generateHashMap() throws FileNotFoundException {
-        Map<String, List<Error>> errorMap = new HashMap<>();
         try {
-            //Tu ładnie wczytuje wszystkie dostępne błędy
+            // Read error list from json file
             List<Error> errorList = FileReadAndSave.loadFromJson();
-            for (Error error : errorList) {
-                if (errorMap.containsKey(ErrorAnalyzer.getKey(error))) {
-                    List<Error> l1 = errorMap.get(ErrorAnalyzer.getKey(error));
-                    l1.add(error);
-                    errorMap.put(ErrorAnalyzer.getKey(error), l1);
-                } else {
-                    List<Error> l1 = new ArrayList<>();
-                    l1.add(error);
-                    errorMap.put(ErrorAnalyzer.getKey(error), l1);
-                }
-            }
+
+            // Return map using streams and group by error key
+            return errorList.stream().collect(Collectors.groupingBy(ErrorAnalyzer::getKey));
 
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return errorMap;
     }
 
     private HashMap<String, Integer> generateHashMapNumberOfOccurrencesByError() throws FileNotFoundException {
-
-        HashMap<String, Integer> errorMapStats = new HashMap<>();
-
         try {
-            //Tu ładnie wczytuje wszystkie dostępne błędy
+            // Read error list from json file
             List<Error> errorList = FileReadAndSave.loadFromJson();
-            int counter;
-            for (Error error : errorList) {
-                if (errorMapStats.containsKey(ErrorAnalyzer.getKey(error))) {
-                    counter = errorMapStats.get(ErrorAnalyzer.getKey(error)) + 1;
-                    errorMapStats.put(ErrorAnalyzer.getKey(error), counter);
-                } else {
-                    errorMapStats.put(ErrorAnalyzer.getKey(error), 1);
-                }
-            }
+
+            // Return hashMap using streams and group by error key
+            return (HashMap<String, Integer>) errorList.stream().collect(Collectors.groupingBy(ErrorAnalyzer::getKey, Collectors.summingInt(error -> 1)));
 
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
@@ -104,52 +86,42 @@ public class ErrorService {
             throw new RuntimeException(e);
         }
 
-        return errorMapStats;
+
     }
 
     private HashMap<String, Integer> generateHashMapNumberOfOccurrencesByDate() throws FileNotFoundException {
-
-        HashMap<String, Integer> errorMapStats = new HashMap<>();
-
         try {
-            //Tu ładnie wczytuje wszystkie dostępne błędy
+            // Read error list from json file
             List<Error> errorList = FileReadAndSave.loadFromJson();
-            int counter;
-            for (Error error : errorList) {
-                if (errorMapStats.containsKey(error.getDate())) {
-                    counter = errorMapStats.get(error.getDate()) + 1;
-                    errorMapStats.put(error.getDate(), counter);
-                } else {
-                    errorMapStats.put(error.getDate(), 1);
-                }
-            }
+
+            // Return hashMap using streams and group by date
+            return (HashMap<String, Integer>) errorList.stream().collect(Collectors.groupingBy(Error::getDate, Collectors.summingInt(error -> 1)));
 
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return errorMapStats;
     }
 
     //Wczytywanie wszystkich błędów z domyślnego pliku tzn errorList.json
     public void saveJson(String filePath) throws FileNotFoundException {
-        List<Error> errorList;
         try {
+            List<Error> newErrorList = FileReadAndSave.readAndParseErrorsFromFile(filePath);
+
             if (new File("errorList.json").exists()) {
-                errorList = FileReadAndSave.loadFromJson();
-                List<Error> newErrorList  = FileReadAndSave.readAndParseErrorsFromFile(filePath);
-                for (Error newError : newErrorList) {
-                    if(!errorList.contains(newError)) {
-                        errorList.add(newError);
-                    }
-                }
+                List<Error> errorList = FileReadAndSave.loadFromJson();
+                List<Error> uniqueErrors;
+                uniqueErrors = newErrorList.stream().distinct().filter(newError -> !errorList.contains(newError)).collect(Collectors.toList());
+
+                errorList.addAll(uniqueErrors);
+                FileReadAndSave.saveToJson(errorList);
+
             } else {
-                errorList = FileReadAndSave.readAndParseErrorsFromFile(filePath);
+                FileReadAndSave.saveToJson(newErrorList);
             }
 
-            FileReadAndSave.saveToJson(errorList);
+
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         } catch (IOException e) {
@@ -198,21 +170,13 @@ public class ErrorService {
             }
         }
 
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Wykres błędów",
-                "Kategorie błędów",
-                "Ilość wystąpień",
-                dataset1,
-                PlotOrientation.HORIZONTAL,
-                true, true, false
-        );
+        JFreeChart chart = ChartFactory.createBarChart("Wykres błędów", "Kategorie błędów", "Ilość wystąpień", dataset1, PlotOrientation.HORIZONTAL, true, true, false);
 
         // Chart 2
 
         errorMapStats = generateHashMapNumberOfOccurrencesByDate();
 
-        sortedMap = new TreeMap<>();
-        sortedMap.putAll(errorMapStats);
+        sortedMap = new TreeMap<>(errorMapStats);
 
         DefaultCategoryDataset dataset2 = new DefaultCategoryDataset();
         for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
@@ -228,14 +192,7 @@ public class ErrorService {
             }
         }
 
-        JFreeChart chart2 = ChartFactory.createBarChart(
-                "Wykres błędów",
-                "Kategorie błędów",
-                "Ilość wystąpień",
-                dataset2,
-                PlotOrientation.VERTICAL,
-                true, true, false
-        );
+        JFreeChart chart2 = ChartFactory.createBarChart("Wykres błędów", "Kategorie błędów", "Ilość wystąpień", dataset2, PlotOrientation.VERTICAL, true, true, false);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(800, 600));
 
