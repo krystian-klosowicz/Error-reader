@@ -118,7 +118,7 @@ public class ErrorService {
                 FileReadAndSave.saveToJson(errorList);
 
             } else {
-                FileReadAndSave.saveToJson(newErrorList);
+                FileReadAndSave.saveToJson(newErrorList.stream().distinct().collect(Collectors.toList()));
             }
 
 

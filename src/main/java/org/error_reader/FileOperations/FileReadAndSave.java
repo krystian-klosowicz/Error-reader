@@ -10,6 +10,7 @@ import org.error_reader.ErrorOperations.ErrorService;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FileReadAndSave {
     public static List<Error> readAndParseErrorsFromFile(String fileName) throws FileNotFoundException {
@@ -38,7 +39,6 @@ public class FileReadAndSave {
 
             br.close();
         } catch (FileNotFoundException e) {
-            //e.printStackTrace();
             throw new FileNotFoundException();
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,13 +72,9 @@ public class FileReadAndSave {
         File file = new File("errorMap.json");
 
         Map<String, List<ErrorDto>> errorDtoMap = new HashMap<>();
-        for (Map.Entry<String, List<Error>> entry : errorMap.entrySet()) {
-            List<ErrorDto> errorDto = new ArrayList<>();
-            for (Error error : entry.getValue()) {
-                errorDto.add(new ErrorDto(error));
-            }
-            errorDtoMap.put(entry.getKey(), errorDto);
-        }
+        errorMap.forEach((key, value) -> errorDtoMap.put(key, value.stream()
+                .map(ErrorDto::new)
+                .collect(Collectors.toList())));
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             objectMapper.writeValue(fileWriter, errorDtoMap);
