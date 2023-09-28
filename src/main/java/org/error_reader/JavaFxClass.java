@@ -140,7 +140,7 @@ public class JavaFxClass extends Application {
                 throw new RuntimeException(ex);
             }
         });
-
+        System.out.println("test");
         exitBtn.setOnAction(e -> primaryStage.close());
 
         VBox layout = new VBox(10);
